@@ -8,19 +8,24 @@ export const StyledEventNav = styled.div`
   display: flex;
   justify-content: center;
 
-  & input {
+  & form {
     min-height: 4rem;
-    width: 50%;
+    width: 80%;
   }
 
-  & input[type=text] {
+  & form select {
+    min-height: 4rem;
+    width: 80%;
+  }
+
+  & select[type=text] {
     padding-left: 4rem;
   }
   
 
   & button {
     min-height: 4rem;
-    width: 5rem;
+    width: 20%;
   }
   
 

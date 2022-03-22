@@ -1,59 +1,65 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { addEvents, selectEvents } from '../../features/event/EventSlice';
 import EventCard from "../../components/Card/Card";
 import { StyledEventSection } from "../../components/styles/EventsSection.styled";
-import { StyledEventNav } from "../../components/styles/CategorySearch.styled"
-import { StyledMoviesList } from "../../components/styles/MoviesList.styled"
+import { StyledMoviesList } from "../../components/styles/EventsList.styled"
+import { StyledPageButton } from "../../components/styles/PaginationButton.styled"
 import HomeLayout from "../../components/HomeLayout";
-
+import Search from '../../components/Search/Search'
+import { loadEventsFromAPI } from '../../api/Event';
 
 const Home = () => {
-    const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(false);
-
+    const events = useSelector(selectEvents);
     const dispatch = useDispatch();
+    const [query, setQuery] = useState({page: 1, limit: 10})
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // searchEvents();
-        console.log("did")
+    const loadEvents = async () => {
+            const response = await loadEventsFromAPI(query.page, query.limit)
+            dispatch(addEvents({
+                data: [...events.data, ...response.data.event],
+                meta: response.data.meta
+            }));
     }
 
-    const handleInputChange = (e) => {
-        const {value} = e.target;
-        setSearch(value)
+    const checkIfCanLoadMore = () => {
+        // console.log(events.data.length, query.page * query.limit)
+        return events.meta.totalItem > (query.page * query.limit)
     }
+
+    const handleLoadMore = (e) => {
+        e.preventDefault()
+        setQuery({
+            ...query,
+            page: query.page + 1
+        })
+        loadEvents()
+    }
+
+    useEffect(() => {
+        loadEvents();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query.page])
+
 
 
   return (
       <HomeLayout>
 
       <StyledEventSection id="movies">
-          <StyledEventNav>
-              <input
-                  type="text"
-                  name="search"
-                  placeholder="Enter event to search"
-                  onChange={handleInputChange}
-                  value={search}
-                  data-testid="search"
-              />
-              <button
-                  className="text-white rounded ml-4"
-                  type="submit">{!loading ? "Search" : "Loading"}
-              </button>
-          </StyledEventNav>
+          <Search />
           <StyledMoviesList>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
-              <EventCard/>
+              {events.data.map((event) => (
+                  <EventCard event={event} key={event._id} />
+              ))}
           </StyledMoviesList>
-
+          { checkIfCanLoadMore() &&
+          <StyledPageButton>
+              <button onClick={handleLoadMore}>
+                  Load more
+              </button>
+          </StyledPageButton>
+          }
       </StyledEventSection>
       </HomeLayout>
   );

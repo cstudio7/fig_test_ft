@@ -1,35 +1,33 @@
 import React from 'react';
-// import { useDispatch } from "react-redux";
-import { StyledMovieItem } from "../styles/MovieItem.styled";
+import { StyledMovieItem } from "../styles/CardItem.styled";
 
-const EventCard = () => {
+const EventCard = ({event}) => {
+
   return (
     <>
-        <StyledMovieItem
-            favorited={"favorited"}
-        >
-            <h2>{"Healthcare Track"}</h2>
+        <StyledMovieItem>
+            <h2>{event.title || "Healthcare Track"}</h2>
             <div>
                 <span>{"Category"}</span>
-                <span>{"release_date"}</span>
+                <span>{event.category || "release_date"}</span>
             </div>
             <div>
                 <span>{"Date"}</span>
-                <span>{"release_date"}</span>
+                <span>{event.date || "release_date"}</span>
             </div>
             <div>
                 <span>{"isVirtual"}</span>
-                <span>{"release_date"}</span>
+                <span>{ event.isVirtual ? "true" : "false" }</span>
             </div>
             <div>
                 <span>{"address"}</span>
-                <span>{"release_date"}</span>
+                <span>{event.address || "release_date"}</span>
             </div>
-            <h2>
-                {"Description"}
-                <h4>{"This session seeks to get people thinking about the ultimate objective of health\n" +
+
+                 <h2>Description</h2>
+                <h4>{event.description || "This session seeks to get people thinking about the ultimate objective of health\n" +
                 "AI"}</h4>
-            </h2>
+
         </StyledMovieItem>
     </>
   )

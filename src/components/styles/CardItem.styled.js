@@ -32,6 +32,20 @@ export const StyledMovieItem = styled.div`
     }
   }
 
+  & > h4 {
+    align-self: center;
+    color: ${({ theme }) => theme.colorGray};
+    text-transform: capitalize;
+    margin: 1rem 0;
+    font-weight: 400;
+    font-size: 1.3rem;
+    text-align: center;
+
+    @media (max-width: ${({ theme }) => theme.breakPoints.tablet}) {
+      font-size: 1.3rem;
+    }
+  }
+
   & > div {
     display: flex;
     justify-content: space-between;
@@ -48,6 +62,7 @@ export const StyledMovieItem = styled.div`
       color: ${({ theme }) => theme.colorGray};
       font-weight: 500;
       font-size: 1.3rem;
+      text-transform: capitalize;
     }
   }
 
