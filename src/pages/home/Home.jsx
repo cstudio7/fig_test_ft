@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { addEvents, selectEvents } from '../../features/event/EventSlice';
+import React, {useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux';
+import {addEvents, selectEvents} from '../../features/event/EventSlice';
 import EventCard from "../../components/Card/Card";
-import { StyledEventSection } from "../../components/styles/EventsSection.styled";
-import { StyledMoviesList } from "../../components/styles/EventsList.styled"
-import { StyledPageButton } from "../../components/styles/PaginationButton.styled"
+import {StyledEventSection} from "../../components/styles/EventsSection.styled";
+import {StyledMoviesList} from "../../components/styles/EventsList.styled"
+import {StyledPageButton} from "../../components/styles/PaginationButton.styled"
 import HomeLayout from "../../components/HomeLayout";
 import Search from '../../components/Search/Search'
-import { loadEventsFromAPI } from '../../api/Event';
+import {loadEventsFromAPI} from '../../api/Event';
 
 const Home = () => {
     const events = useSelector(selectEvents);
@@ -15,16 +15,15 @@ const Home = () => {
     const [query, setQuery] = useState({page: 1, limit: 10})
 
     const loadEvents = async () => {
-            const response = await loadEventsFromAPI(query.page, query.limit)
-            dispatch(addEvents({
-                data: [...events.data, ...response.data.event],
-                meta: response.data.meta
-            }));
+        const response = await loadEventsFromAPI(query.page, query.limit)
+        dispatch(addEvents({
+            data: [...events.data, ...response.data.event],
+            meta: response.data.meta
+        }));
     }
 
     const checkIfCanLoadMore = () => {
-        // console.log(events.data.length, query.page * query.limit)
-        return events.meta.totalItem > (query.page * query.limit)
+        return events.data.totalItem > (query.page * query.limit)
     }
 
     const handleLoadMore = (e) => {
@@ -38,31 +37,29 @@ const Home = () => {
 
     useEffect(() => {
         loadEvents();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query.page])
 
 
+    return (
+        <HomeLayout>
 
-  return (
-      <HomeLayout>
-
-      <StyledEventSection id="movies">
-          <Search />
-          <StyledMoviesList>
-              {events.data.map((event) => (
-                  <EventCard event={event} key={event._id} />
-              ))}
-          </StyledMoviesList>
-          { checkIfCanLoadMore() &&
-          <StyledPageButton>
-              <button onClick={handleLoadMore}>
-                  Load more
-              </button>
-          </StyledPageButton>
-          }
-      </StyledEventSection>
-      </HomeLayout>
-  );
+            <StyledEventSection id="movies">
+                <Search/>
+                <StyledMoviesList>
+                    {events.data.map((event) => (
+                        <EventCard event={event} key={event._id}/>
+                    ))}
+                </StyledMoviesList>
+                {checkIfCanLoadMore() &&
+                    <StyledPageButton>
+                        <button onClick={handleLoadMore}>
+                            Load more
+                        </button>
+                    </StyledPageButton>
+                }
+            </StyledEventSection>
+        </HomeLayout>
+    );
 };
 
 export default Home;
